@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لغز المحقق - القائمة الرئيسية</title>
+    <style>
+        :root {
+            --dark-bg: #0f0f0f;
+            --gold: #bfa071;
+            --text: #e0e0e0;
+            --card-bg: rgba(30, 30, 30, 0.9);
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text);
+            font-family: 'Amiri', serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* العنوان العلوي (TXT في رسمك) */ 
+        .game-title {
+    font-family: 'Cinzel', serif; /* الخط الجديد */
+    font-size: 3.5rem;
+    color: var(--gold);
+    text-shadow: 0 0 20px rgba(191, 160, 113, 0.6);
+    margin-top: 80px;
+    margin-bottom: 70px;
+    letter-spacing: 8px;
+    font-weight: 700;
+}
+        /* حاوية الملفات أو القضايا */
+        .cases-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            width: 100%;
+            max-width: 800px;
+            padding-bottom: 100px;
+
+
+          
+        }
+
+
+        /* تصميم المستطيل (البطاقة) من رسمك */
+        .case-card {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(191, 160, 113, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            gap: 20px;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .case-card:hover {
+            transform: scale(1.02);
+            border-color: var(--gold);
+        }
+
+        /* قسم الصورة في البطاقة */
+        .case-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid var(--gold);
+            flex-shrink: 0; /* يمنع الصورة من الصغر */
+        }
+
+        /* قسم النصوص */
+        .case-info {
+            flex-grow: 1;
+        }
+
+        .case-info h2 {
+            margin: 0 0 10px 0;
+            color: var(--gold);
+        }
+
+        .case-info p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #bbb;
+            line-height: 1.5;
+        }
+
+        /* زر ابدأ */
+        .start-btn {
+            background: transparent;
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            padding: 10px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .start-btn:hover {
+            background: var(--gold);
+            color: black;
+        }
+        /* تأثير الأيقونات الساقطة في الخلفية */
+.background-elements {
+    position: fixed;
+    top: -50px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* لتكون خلف كل شيء */
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.emoji {
+    position: absolute;
+    color: rgba(191, 160, 113, 0.2); /* لون ذهبي شفاف جداً */
+    font-size: 24px;
+    user-select: none;
+    animation: fall linear infinite;
+    filter: drop-shadow(0 0 5px rgba(191, 160, 113, 0.5)); /* تأثير اللمعان */
+}
+
+/* تنسيق الرموز المتساقطة (الخلفية) */
+.emoji {
+    position: fixed;
+    top: -50px;
+    z-index: -1; /* ليكون خلف البطاقات */
+    user-select: none;
+    pointer-events: none;
+    animation: fall linear forwards;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(110vh) rotate(360deg);
+    }
+}
+
+/* تنسيق الشاشة السوداء (The Overlay) */
+#message-overlay {
+    display: none; /* مخفية في البداية */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.98); /* سواد فخم */
+    z-index: 9999; /* ليكون فوق كل شيء */
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* محتوى الرسالة الذهبية */
+.overlay-content {
+    text-align: center;
+    color: #bfa071; /* الذهبي */
+    font-family: 'Amiri', serif;
+}
+
+#overlay-text {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    text-shadow: 0 0 15px rgba(191, 160, 113, 0.4);
+    padding: 20px;
+}
+
+/* زر الإغلاق الذهبي */
+.close-overlay-btn {
+    background: transparent;
+    border: 1px solid #bfa071;
+    color: #bfa071;
+    padding: 10px 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    font-family: 'Amiri', serif;
+    margin-top: 20px;
+    transition: 0.3s;
+}
+
+.close-overlay-btn:hover {
+    background: #bfa071;
+    color: black;
+}
+
+#investigation-screen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: radial-gradient(circle, #2c2c2c, #000);
+    z-index: 5000;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+/* الطاولة */
+.investigation-table {
+    width: 50%; height: 70%;
+    background: rgba(191, 160, 113, 0.1); /* لون ذهبي شفاف */
+    border: 2px solid #bfa071;
+    border-radius: 20px;
+    position: relative;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+/* الكومة */
+.deck-container {
+    width: 200px; height: 300px;
+    position: relative;
+    cursor: pointer;
+}
+
+.card-stack {
+    width: 100%; height: 100%;
+    position: absolute;
+    background: #1a1a1a;
+    border: 1px solid #bfa071;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px black;
+    transition: 0.5s;
+}
+
+/* توزيع البطاقات لتبدو ككومة حقيقية */
+#card-2 { transform: translate(5px, 5px); }
+#card-3 { transform: translate(10px, 10px); }
+
+/* الخيارات على اليسار */
+.options-side {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.option-btn {
+    background: #1a1a1a;
+    color: #bfa071;
+    border: 1px solid #bfa071;
+    padding: 15px;
+    cursor: pointer;
+    font-family: 'Amiri', serif;
+    transition: 0.3s;
+}
+
+.option-btn:hover { background: #bfa071; color: black; }
+
+
+@keyframes fall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+
+
+.main-card-table {
+    width: 80%;
+    height: 80%;
+    background: rgba(26, 26, 26, 0.85); /* شفافية تشبه البطاقات الأولى */
+    border: 2px solid #bfa071; /* إطار ذهبي */
+    border-radius: 15px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(191, 160, 113, 0.1);
+    padding: 40px;
+    backdrop-filter: blur(5px); /* تأثير ضبابي خلف البطاقة لزيادة الجمالية */
+}
+
+.card-content {
+    color: #bfa071;
+    font-size: 1.8rem;
+    line-height: 1.6;
+    text-align: center;
+    max-width: 80%;
+    font-family: 'Amiri', serif;
+}
+
+.close-btn {
+    position: absolute;
+    bottom: 20px;
+    background: transparent;
+    border: 1px solid #bfa071;
+    color: #bfa071;
+    padding: 8px 25px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.close-btn:hover {
+    background: #bfa071;
+    color: #000;
+}
+
+.main-card-table {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr; /* يسار: خيارات | وسط: طاولة | يمين: كومة */
+    align-items: center;
+    gap: 20px;
+    width: 90%;
+    height: 85%;
+}
+
+/* الكومة على اليمين */
+.deck-stack {
+    position: relative;
+    width: 150px;
+    height: 220px;
+    cursor: pointer;
+}
+
+.deck-card {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #1a1a1a;
+    border: 2px solid #bfa071;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+    transition: 0.3s;
+}
+
+/* تأثير تراكم البطاقات */
+.deck-card:nth-child(2) { transform: translate(-5px, -5px); }
+.deck-card:nth-child(3) { transform: translate(-10px, -10px); }
+
+/* البطاقة التي تتقلب (3D) */
+.playing-card {
+    width: 250px;
+    height: 380px;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+}
+
+.playing-card.is-flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 15px;
+    border: 2px solid #bfa071;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+
+.card-back { /* الوجه الذي يحتوي القصة */
+    background: #1a1a1a;
+    transform: rotateY(180deg);
+    color: #bfa071;
+}
+
+.card-front { /* الوجه الذي يحتوي صورة شريط الشرطة */
+    background: black;
+}
+
+/* الأزرار على اليسار */
+.option-btn {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid #bfa071;
+    color: #bfa071;
+    cursor: pointer;
+    font-family: 'Amiri', serif;
+    animation: fadeIn 0.5s forwards;
+}
+
+.btn-detective {
+    background: #000;            /* خلفية سوداء تماماً */
+    color: #ffffff;             /* نص أبيض ناصع */
+    border: 1px solid #d4af37;  /* إطار ذهبي نحيف */
+    padding: 8px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 0px;         /* حواف حادة ليعطي طابعاً رسمياً */
+    transition: 0.3s;
+    margin-top: 20px;
+    font-family: inherit;
+}
+
+.btn-detective:hover {
+    background: #d4af37;        /* يتحول للذهبي عند التمرير */
+    color: #000;                /* النص يصبح أسود */
+    box-shadow: 0 0 10px #d4af37; /* وهج ذهبي بسيط */
+}
+
+.btn-detective:active {
+    transform: translateY(0);
+}
+
+#active-card-slot {
+    display: flex;
+    flex-direction: column;    /* ترتيب العناصر عمودياً */
+    justify-content: center;   /* توسيط عمودي */
+    align-items: center;       /* توسيط أفقي */
+    width: 100%;
+    height: 100%;              /* ليأخذ كامل مساحة الـ Overlay */
+    min-height: 300px;         /* مساحة كافية للتحرك */
+    text-align: center;
+    padding: 20px;
+}
+   
+
+#overlay-text {
+    margin-bottom: 20px;       /* مسافة بين النص والزر */
+    font-size: 33px;           /* تكبير النص قليلاً ليكون واضحاً */
+    width: 80%;                /* لضمان عدم التصاق النص بالحواف */
+}
+
+.card-back-style {
+    width: 215px;           /* عرض البطاقة */
+    height: 300px;          /* طول البطاقة */
+    background-color: #2c2c2c; /* لون خلفية البطاقة */
+    background-image: url('assests/cb1.jpg'); /* ضع هنا رابط صورة ظهر البطاقة */
+    background-size: cover;
+    border: 4px solid #d4af37; /* إطار ذهبي */
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    margin-bottom: 20px;
+    transition: transform 0.3s;
+}
+
+.card-back-style:hover {
+    transform: scale(1.05); /* حركة بسيطة عند التأشير */
+}
+
+/* الحاوية التي تعطي تأثير البعد الثالث */
+.card-slot {
+    perspective: 1000px; 
+}
+
+/* الحاوية التي تدور فعلياً */
+.card-inner {
+    position: relative;
+    width: 250px; /* يمكنك تعديل عرض البطاقة من هنا */
+    height: 350px; /* يمكنك تعديل طول البطاقة من هنا */
+    transition: transform 0.8s; /* سرعة القلب (0.8 ثانية) - قلل الرقم لزيادة السرعة */
+    transform-style: preserve-3d;
+    cursor: pointer;
+    display: none; /* مخفية في البداية وتظهر بالـ JS */
+}
+
+/* الكلاس الذي يتم إضافته بالـ JS لتدوير البطاقة */
+.is-flipped {
+    transform: rotateY(180deg);
+}
+
+/* تنسيق مشترك للوجهين */
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; /* يمنع رؤية الوجه الآخر بشكل مقلوب */
+    border: 4px solid #d4af37;
+    border-radius: 15px;
+      overflow: hidden;
+}
+
+/* الوجه الخلفي يكون مقلوباً مسبقاً لكي يظهر صحيحاً عند الدوران */
+.card-back {
+    transform: rotateY(180deg);
+}
+
+.card-front img, .card-back img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.navigation-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 100px;
+}
+
+.choice-box {
+    width: 100px;
+    height: 100px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #d4af37;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+.choice-box:hover {
+    background: #d4af37;
+    transform: scale(1.1); /* تكبير بسيط عند التمرير */
+}
+
+.choice-label {
+    color: #d4af37;
+    font-size: 25px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.choice-box:hover .choice-label {
+    color: #1a1a1a;
+}
+
+    </style>
+</head>
+<body>
+
+
+
+    <div id="options-container" class="options-side"></div>
+
+    <div class="background-elements" id="bg-elements"></div>
+
+    <div class="game-title">Detective Rina</div>
+
+    <div class="cases-container">
+        
+        <div class="case-card">
+            <div class="case-image" style="background-image: url('assests/p2.jpg');"></div>
+            
+            <div class="case-info">
+                <h2>ملف: الموت قبل الغروب </h2>
+                <p>مع اخر خيوط الغروب الضحية ممد في ورشته التي افنى فيها عمره ,لافوضى لا مقاومة ... لكن انتظر اظن انني ارى شيئا ما </p>
+            </div>
+
+            <button class="start-btn" onclick="startGame(1)">ابدأ</button>
+        </div>
+
+        <div class="case-card">
+            <div class="case-image" style="background-image: url('assests/p1.jpg');"></div>
+            <div class="case-info">
+                <h2>ملف: قريبا ...</h2>
+                <p> قريبا ...</p>
+            </div>
+            <button class="start-btn" onclick="startGame(2)">ابدأ</button>
+        </div>
+
+        <div class="case-card">
+            <div class="case-image" style="background-image: url('assests/p1.jpg');"></div>
+            <div class="case-info">
+                <h2>ملف : قريبا ...</h2>
+                <p>قريبا ...</p>
+            </div>
+            <button class="start-btn" onclick="startGame(3)">ابدأ</button>
+        </div>
+
+        <div class="case-card">
+            <div class="case-image" style="background-image: url('assests/p1.jpg');"></div>
+            <div class="case-info">
+                <h2>ملف : قريبا ...</h2>
+                <p> قريبا ...</p>
+            </div>
+            <button class="start-btn" onclick="startGame(4)">ابدأ</button>
+        </div>
+
+        <div class="case-card">
+            <div class="case-image" style="background-image: url('assests/p1.jpg');"></div>
+            <div class="case-info">
+                <h2>ملف : قريبا ...</h2>
+                <p> قريبا ... </p>
+            </div>
+            <button class="start-btn" onclick="startGame(5)">ابدأ</button>
+        </div>
+
+    </div>
+
+    <script>
+
+        let typingTimer; // متغير للتحكم في سرعة الكتابة وإيقافها عند الحاجة
+
+function typeWriter(text, elementId, speed) {
+    let i = 0;
+    const element = document.getElementById(elementId);
+    element.innerHTML = ""; // تفريغ النص القديم قبل البدء
+    
+    // إيقاف أي عملية كتابة سابقة إذا ضغط المستخدم بسرعة
+    clearTimeout(typingTimer);
+
+    function type() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            typingTimer = setTimeout(type, speed);
+        }
+    }
+    type();
+}
+
+
+function closeOverlay() {
+    document.getElementById('message-overlay').style.display = "none";
+    clearTimeout(typingTimer); // إيقاف الكتابة إذا أغلق المستخدم الشاشة
+
+    }
+
+// دالة لقلب البطاقة عند النقر عليها
+function flipCard() {
+    const card = document.getElementById('card-inner');
+   if (card) card.classList.toggle('is-flipped'); // يضيف أو يحذف كلاس الدوران
+}
+
+        function startGame(caseId) {
+    const overlay = document.getElementById('message-overlay');
+    const textElement = document.getElementById('overlay-text');
+    const cardBack = document.getElementById('card-back-view');
+        const cardInner = document.getElementById('card-inner');
+    const btn = document.getElementById('understand-btn');
+   
+    // تصفير كل شيء قبل البدء
+    textElement.innerText = "";
+       if(cardInner){
+        cardInner.style.display="none";
+        cardInner.classList.remove('is-flipped');
+
+    overlay.style.display = "flex";
+
+    if (caseId === 1) {
+        // بدلاً من النص، نظهر ظهر البطاقة
+        if(cardInner) cardInner.style.display = "block";
+        textElement.innerText = "اضغط على البطاقة ";
+              if(btn) btn.style.display = "block";
+
+    } else {
+        let message = "";
+        if (caseId === 2) message = "قريباً جداً لا تقلق 😉";
+        else if (caseId === 3) message = "لقد أخبرتك قريباً، لماذا تصر؟ 🙄";
+        else if (caseId === 4) message = "لقد أخبرتك قريباً! 😠";
+        else if (caseId === 5) message = "يا إلهي هذا الأبله لا يفهم شيئاً بالرغم من أنه محقق بارع 😎✨";
+
+        overlay.style.display = "flex";
+
+        // تشغيل تأثير الآلة الكاتبة (النص، معرف العنصر، السرعة بالملي ثانية)
+    typeWriter(message, "overlay-text", 50); 
+}
+
+function closeOverlay() {
+    document.getElementById('message-overlay').style.display = "none";
+    clearTimeout(typingTimer); // إيقاف الكتابة إذا أغلق المستخدم الشاشة
+
+    }
+}
+        }
+
+
+
+
+     
+
+  // --- جزء الرموز المتساقطة (The Emojis) ---
+const bgContainer = document.getElementById('bg-elements');
+const emojis = ['🕵️', '🔍', '🔑', '📜', '⚖️', '🩸'];
+
+function createEmoji() {
+    const emoji = document.createElement('div');
+    emoji.classList.add('emoji');
+    
+    // اختيار إيموجي عشوائي
+    emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+    
+    // مكان الظهور العشوائي (من اليسار لليمين)
+    emoji.style.left = Math.random() * 100 + "vw";
+    
+    // سرعة السقوط العشوائية (بين 5 و 15 ثانية)
+    const duration = Math.random() * 10 + 5;
+    emoji.style.animationDuration = duration + "s";
+    
+    // حجم عشوائي
+    emoji.style.fontSize = Math.random() * 20 + 20 + "px";
+    
+    bgContainer.appendChild(emoji);
+    
+    // حذف العنصر بعد انتهاء الحركة لتوفير الذاكرة
+    setTimeout(() => {
+        emoji.remove();
+    }, duration * 1000);
+}
+
+// صنع إيموجي جديد كل 500 ملي ثانية
+setInterval(createEmoji, 500);
+
+
+
+
+// دالة إغلاق الشاشة السوداء والعودة للواجهة
+function closeOverlay() {
+    document.getElementById('message-overlay').style.display = "none";
+}
+
+
+function changeCard(newImagePath, description) {
+    const backImg = document.getElementById('back-img');
+    const cardInner = document.getElementById('card-inner');
+    const textElement = document.getElementById('overlay-text');
+
+    // 1. إذا كانت البطاقة مقلوبة، نعيدها لوضعها الأول أولاً
+    cardInner.classList.remove('is-flipped');
+
+    // 2. ننتظر قليلاً ثم نغير المحتوى
+    setTimeout(() => {
+        backImg.src = newImagePath;
+        textElement.innerText = "لقد اخترت: " + description;
+    }, 300);
+}
+
+
+    </script>
+
+<div id="message-overlay" class="overlay">
+<div class="main-card-table">
+    <div id="options-container" class="options-sidebar"></div>
+
+
+
+  <div id="active-card-slot" class="card-slot">
+       <div class="navigation-container">
+
+      
+          <div class="choice-box" onclick="changeCard('assests/cb2.png', 'تحليل البصمات')">
+        <span class="choice-label">بطاقة 02</span>
+    </div>
+
+    <div id="card-inner" class="card-inner" onclick="flipCard()" style="display:none;">
+        <div class="card-front">
+            <img src="assests/cb1.jpg"> 
+        </div>
+        <div class="card-back">
+            <img src="assests/cf1.png">
+        </div>
+    </div>
+     
+
+       
+     <div class="choice-box" onclick="changeCard('assests/cb3.png', ' بطاقة 03')">
+        <span class="choice-label">بطاقة 03</span>
+    </div>
+</div>
+    
+    <p id="overlay-text" class="intro-text"></p>
+    <button id="understand-btn" class="btn-detective" onclick="closeOverlay()">فهمت</button>
+</div>
+</div>
+
+
+</body>
+</html>
