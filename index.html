@@ -150,18 +150,21 @@
 
 /* تنسيق الشاشة السوداء (The Overlay) */
 #message-overlay {
-    display: none; /* مخفية في البداية */
+    display: none; /* مخفي في البداية */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.98); /* سواد فخم */
+    background-color: rgba(0, 0, 0, 0.98); /* سواد فخم وثقيل كما كان */
     z-index: 9999; /* ليكون فوق كل شيء */
     justify-content: center;
     align-items: center;
     flex-direction: column;
 }
+
+
+
 
 /* محتوى الرسالة الذهبية */
 .overlay-content {
@@ -286,6 +289,7 @@
     justify-content: center;
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(191, 160, 113, 0.1);
     padding: 40px;
+    gap:10px;
     backdrop-filter: blur(5px); /* تأثير ضبابي خلف البطاقة لزيادة الجمالية */
 }
 
@@ -413,8 +417,9 @@
     cursor: pointer;
     border-radius: 0px;         /* حواف حادة ليعطي طابعاً رسمياً */
     transition: 0.3s;
-    margin-top: 20px;
+    margin-top:100 px;
     font-family: inherit;
+
 }
 
 .btn-detective:hover {
@@ -441,9 +446,12 @@
    
 
 #overlay-text {
-    margin-bottom: 20px;       /* مسافة بين النص والزر */
-    font-size: 33px;           /* تكبير النص قليلاً ليكون واضحاً */
-    width: 80%;                /* لضمان عدم التصاق النص بالحواف */
+    width: 100%;           /* لضمان أنه يأخذ العرض كاملاً ليتوسط */
+    text-align: center;    /* توسيط النص أفقياً */
+    margin: 20px 0;        /* إضافة مسافة فوق وتحت النص */
+    font-size: 50px;/* يمكنكِ تعديل الحجم حسب الرغبة */
+    color: #bfa071;        /* اللون الذهبي */
+    display: block;        /* لضمان أنه يتعامل كسطر مستقل */
 }
 
 .card-back-style {
@@ -541,6 +549,71 @@
 .choice-box:hover .choice-label {
     color: #1a1a1a;
 }
+
+
+.main-card-table {
+    display: flex;
+    flex-direction: column; /* ترتيب العناصر تحت بعضها */
+    align-items: center;    /* توسيط العناصر أفقياً */
+    justify-content: center; /* توسيط العناصر عمودياً */
+    gap: 30px;              /* مسافة بين البطاقة والزر */
+    width: 100%;
+    height: 100%;
+}
+
+.navigation-container {
+    display: flex;
+    align-items: center;    /* لجعل الأزرار والبطاقة على خط واحد */
+    justify-content: center;
+    gap: 50px;              /* مسافة بين الأزرار والبطاقة */
+    width: 100%;
+}
+
+/* زر فهمت ليكون واضحاً وتحت البطاقة */
+.btn-detective {
+    padding: 15px 50px;
+    font-size: 1.2rem;
+    margin-top: 20px;
+}
+
+
+/* تأثير الوميض الذهبي للنص */
+.golden-glow-text {
+    color: #bfa071; /* اللون الذهبي الأساسي */
+    text-shadow: 0 0 10px rgba(191, 160, 113, 0.7), 
+                 0 0 20px rgba(191, 160, 113, 0.5), 
+                 0 0 30px rgba(191, 160, 113, 0.3);
+    animation: golden-flash 2s infinite alternate; /* حركة الوميض */
+}
+
+@keyframes golden-flash {
+    from {
+        text-shadow: 0 0 10px rgba(191, 160, 113, 0.7);
+    }
+    to {
+        text-shadow: 0 0 20px rgba(191, 160, 113, 1),
+                    0 0 30px rgba(191, 160, 113, 0.8),
+                    0 0 40px rgba(191, 160, 113, 0.6);
+    }
+}
+
+.golden-typewriter {
+    color: #f1d29a; /* لون ذهبي فاتح ليظهر الإشعاع خلفه */
+    text-shadow: 
+        0 0 10px rgba(191, 160, 113, 0.9), 
+        0 0 20px rgba(191, 160, 113, 0.7), 
+        0 0 40px rgba(191, 160, 113, 0.4); /* طبقات إضافية للإشعاع */
+    font-size: 1.8rem; /* حجم موحد وكبير */
+    font-family: 'Cairo', sans-serif; /* تأكدي من استخدام خط عربي جميل */
+    text-align: center;
+    margin: 15px 0;
+    font-weight: bold;
+    min-height: 45px;
+    display: block;
+    width: 100%;
+}
+
+
 
     </style>
 </head>
@@ -641,11 +714,14 @@ function flipCard() {
 }
 
         function startGame(caseId) {
+          
     const overlay = document.getElementById('message-overlay');
     const textElement = document.getElementById('overlay-text');
     const cardBack = document.getElementById('card-back-view');
         const cardInner = document.getElementById('card-inner');
     const btn = document.getElementById('understand-btn');
+    const btn2 = document.getElementById('btn-card-2');
+    const btn3 = document.getElementById('btn-card-3');
    
     // تصفير كل شيء قبل البدء
     textElement.innerText = "";
@@ -658,7 +734,10 @@ function flipCard() {
     if (caseId === 1) {
         // بدلاً من النص، نظهر ظهر البطاقة
         if(cardInner) cardInner.style.display = "block";
+ 
         textElement.innerText = "اضغط على البطاقة ";
+        btn2.style.display = "flex";
+        btn3.style.display = "flex";
               if(btn) btn.style.display = "block";
 
     } else {
@@ -668,6 +747,8 @@ function flipCard() {
         else if (caseId === 4) message = "لقد أخبرتك قريباً! 😠";
         else if (caseId === 5) message = "يا إلهي هذا الأبله لا يفهم شيئاً بالرغم من أنه محقق بارع 😎✨";
 
+        btn2.style.display = "none";
+        btn3.style.display = "none";
         overlay.style.display = "flex";
 
         // تشغيل تأثير الآلة الكاتبة (النص، معرف العنصر، السرعة بالملي ثانية)
@@ -727,60 +808,246 @@ function closeOverlay() {
     document.getElementById('message-overlay').style.display = "none";
 }
 
+                                                                                                                                       
+let currentStoryPath = "start";
+function nextStep(buttonNumber) {
+   
 
-function changeCard(newImagePath, description) {
-    const backImg = document.getElementById('back-img');
+   if (currentStoryPath === "start") {
+        if (buttonNumber === 2) {
+            currentStoryPath = "h";
+            // إذا ضغطت على زر 2 في المرحلة الأولى
+            changeCard('assests/cb2.png   ', 'assests/cf2.png   ', 'بطاقة 4A ', 'بطاقة 4B');
+        } else {
+            currentStoryPath = "f";
+            // إذا ضغطت على زر 3 في المرحلة الأولى
+            changeCard('assests/cb3.png   ', 'assests/cf3.png   ', 'بطاقة4C', 'بطاقة4D');
+        }
+    } 
+    else if (currentStoryPath === "h") {
+       if (buttonNumber === 2) {
+   //بطاقة 4
+            currentStoryPath = "w";
+            changeCard('assests/cb4.png ', 'assests/cf4.png      ', 'بطاقة 01 ', 'بطاقة 02');
+        } else {
+    //بطاقة 5
+            currentStoryPath = "o";
+            changeCard('assests/cb5.png ', 'assests/cf5.png      ', 'بطاقة 01 ', 'بطاقة 02');
+        }
+    }
+
+     else if (currentStoryPath === "f"){
+       if (buttonNumber === 2) {
+   //بطاقة 6
+            currentStoryPath = "a";
+            changeCard('assests/cb6.png', 'assests/cf6.png     ',  'بطاقة 02 ', 'بطاقة 03');
+        } else {
+    //بطاقة 7
+            currentStoryPath = "b";
+            changeCard('assests/cb7.png ', 'assests/cf7.png      ',  'بطاقة 05 ', 'بطاقة 05');
+        }
+    }
+
+     else if (currentStoryPath === "w") {
+       if (buttonNumber === 2) {
+   //بطاقة 1
+            currentStoryPath = "start";
+            changeCard('assests/cb1.jpg', 'assests/cf1.png     ', 'بطاقة 02 ', 'بطاقة 03');
+        } else {
+    //بطاقة 2
+            currentStoryPath = "h";
+            changeCard('assests/cb2.png ', 'assests/cf2.png      ', 'بطاقة 4A ', 'بطاقة 4B');
+        }
+    }
+
+     else if (currentStoryPath === "o") {
+       if (buttonNumber === 2) {
+   //بطاقة 1
+            currentStoryPath = "start";
+            changeCard('assests/cb1.jpg', 'assests/cf1.png     ', 'بطاقة 02 ', 'بطاقة 03');
+        } else {
+    //بطاقة 2
+            currentStoryPath = "h";
+            changeCard('assests/cb2.png ', 'assests/cf2.png      ', 'بطاقة 4A ', 'بطاقة 4B');
+        }
+    }
+
+     else if (currentStoryPath === "a") {
+       if (buttonNumber === 2) {
+  //بطاقة 2
+            currentStoryPath = "h";
+            changeCard('assests/cb2.png ', 'assests/cf2.png      ','بطاقة 4A ', 'بطاقة 4B');
+        } else {
+    //بطاقة 3
+            currentStoryPath = "f";
+            changeCard('assests/cb3.png ', 'assests/cf3.png      ', 'بطاقة 4C  ', 'بطاقة 4D');
+        }
+    }
+
+     else if (currentStoryPath === "b") {
+       if (buttonNumber === 2) {
+   //بطاقة 8
+            currentStoryPath = "c";
+            changeCard('assests/cb8.png', 'assests/cf8.png     ', 'بطاقة 06 ', 'بطاقة 06');
+        } else {
+    //بطاقة 8
+            currentStoryPath = "c";
+              changeCard('assests/cb8.png', 'assests/cf8.png     ', 'بطاقة 06 ', 'بطاقة 06');
+        }
+    }
+
+     else if (currentStoryPath === "c") {
+       if (buttonNumber === 2) {
+   //بطاقة 9
+            currentStoryPath = "r";
+            changeCard('assests/cb9.png', 'assests/cf9.png     ', 'بطاقة 07 ', 'بطاقة 07');
+        } else {
+    //بطاقة 9
+            currentStoryPath = "r";
+            changeCard('assests/cb9.png', 'assests/cf9.png     ',  'بطاقة 07 ', 'بطاقة 07');
+        }
+    }
+
+     else if (currentStoryPath === "r") {
+       if (buttonNumber === 2) {
+   //بطاقة 10
+            currentStoryPath = "p";
+            changeCard('assests/cb10.png', 'assests/cf10.png    ', 'اضغط هنا ','العودة');
+        } else {
+    //بطاقة 10
+            currentStoryPath = "g";
+            changeCard('assests/cb10.png', 'assests/cf10.png    ', 'اضغط هنا ','العودة');
+        }
+    }
+// أضيفي هذا تحت آخر قوس إغلاق في صورتك (قبل إغلاق دالة nextStep)
+
+else if (currentStoryPath === "p" || currentStoryPath === "g") {
+    if (buttonNumber === 2) { 
+        // إذا ضغط على "اضغط هنا" (الزر رقم 2) -> يذهب للنهاية المفاجأة
+        showSurprise(); 
+    } else {
+        // إذا ضغط على "العودة" (الزر رقم 3) -> يرجع للبداية
+        location.reload(); 
+    }
+}
+ } 
+
+
+function showSurprise() {
+    const table = document.querySelector('.main-card-table');
+    
+    // تنظيف الواجهة - لاحظي أن جميع الأسطر لها نفس الكلاس الآن
+    table.innerHTML = `
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; width: 100%;">
+            <p id="line1" class="golden-typewriter"></p>
+            <p id="line2" class="golden-typewriter"></p>
+            <p id="line3" class="golden-typewriter"></p>
+            <p id="line4" class="golden-typewriter"></p>
+            <button id="final-btn" class="btn-detective" onclick="location.reload()" style="display:none; margin-top: 40px;">فهمت</button>
+        </div>
+    `;
+
+    const messages = [
+        { id: "line1", text: "🎉 لقد فزت مبرووووك 🎉" },
+        { id: "line2", text: "اليس كذلك؟ 🤔" },
+        { id: "line3", text: "هل انت متاكد 😟" },
+        { id: "line4", text: "امزح امزح 😂 لقد فزت وتعلمت الان نوع جديد من الجرائم وعقوبتها 📖⚖️ نلتقي في قضية اخرى 🔍" }
+    ];
+
+    let currentMsgIndex = 0;
+
+    function typeMessage(index) {
+        if (index >= messages.length) {
+            // إظهار زر فهمت في النهاية بنعومة
+            const btn = document.getElementById('final-btn');
+            btn.style.display = "block";
+            return;
+        }
+
+        let charIndex = 0;
+        let msg = messages[index];
+        let element = document.getElementById(msg.id);
+
+        function charByChar() {
+            if (charIndex < msg.text.length) {
+                element.innerHTML += msg.text.charAt(charIndex);
+                charIndex++;
+                setTimeout(charByChar, 40); // سرعة الكتابة
+            } else {
+                // انتظار ثانية قبل السطر التالي
+                setTimeout(() => {
+                    typeMessage(index + 1);
+                }, 1000);
+            }
+        }
+        charByChar();
+    }
+
+    typeMessage(0);
+}
+
+function changeCard(frontImg, backImg, label2, label3, nextAction2, nextAction3) {
     const cardInner = document.getElementById('card-inner');
-    const textElement = document.getElementById('overlay-text');
+    const fImg = document.querySelector('.card-front img');
+    const bImg = document.querySelector('.card-back img');
+    const btn2 = document.getElementById('btn-card-2');
+    const btn3 = document.getElementById('btn-card-3');
+    const btn2Label = btn2.querySelector('.choice-label');
+    const btn3Label = btn3.querySelector('.choice-label');
 
-    // 1. إذا كانت البطاقة مقلوبة، نعيدها لوضعها الأول أولاً
+    // 1. إعادة قلب البطاقة للوجه الأمامي
     cardInner.classList.remove('is-flipped');
 
-    // 2. ننتظر قليلاً ثم نغير المحتوى
     setTimeout(() => {
-        backImg.src = newImagePath;
-        textElement.innerText = "لقد اخترت: " + description;
+        // 2. تغيير صور البطاقة
+        if(fImg) fImg.src = frontImg;
+        if(bImg) bImg.src = backImg;
+        
+        // 3. تغيير نصوص الأزرار
+        if(label2) btn2Label.innerText = label2;
+        if(label3) btn3Label.innerText = label3;
+
+        // 4. السحر هنا: تغيير وظيفة الأزرار للمرحلة القادمة
+        if(nextAction2) btn2.setAttribute('onclick', nextAction2);
+        if(nextAction3) btn3.setAttribute('onclick', nextAction3);
+        
     }, 300);
 }
 
 
+
+
     </script>
 
+
 <div id="message-overlay" class="overlay">
-<div class="main-card-table">
-    <div id="options-container" class="options-sidebar"></div>
+    <div class="main-card-table">
+        
+        <div id="active-card-slot" class="card-slot">
+            <div class="navigation-container">
 
+               <div id="btn-card-2" class="choice-box" onclick="nextStep(2)">
+    <span class="choice-label">بطاقة 02</span>
+</div>
+                <div id="card-inner" class="card-inner" onclick="flipCard()" style="display:none;">
+                    <div class="card-front">
+                        <img src="assests/cb1.jpg"> 
+                    </div>
+                    <div class="card-back">
+                        <img id="back-img" src="assests/cf1.png">
+                    </div>
+                </div>
 
-
-  <div id="active-card-slot" class="card-slot">
-       <div class="navigation-container">
-
-      
-          <div class="choice-box" onclick="changeCard('assests/cb2.png', 'تحليل البصمات')">
-        <span class="choice-label">بطاقة 02</span>
-    </div>
-
-    <div id="card-inner" class="card-inner" onclick="flipCard()" style="display:none;">
-        <div class="card-front">
-            <img src="assests/cb1.jpg"> 
+               <div id="btn-card-3" class="choice-box" onclick="nextStep(3)">
+    <span class="choice-label">بطاقة 03</span>
+</div>
+            </div>
         </div>
-        <div class="card-back">
-            <img src="assests/cf1.png">
-        </div>
-    </div>
-     
-
-       
-     <div class="choice-box" onclick="changeCard('assests/cb3.png', ' بطاقة 03')">
-        <span class="choice-label">بطاقة 03</span>
+        
+        <p id="overlay-text" class="intro-text"></p>
+        <button id="understand-btn" class="btn-detective" onclick="closeOverlay()">فهمت</button>
     </div>
 </div>
-    
-    <p id="overlay-text" class="intro-text"></p>
-    <button id="understand-btn" class="btn-detective" onclick="closeOverlay()">فهمت</button>
-</div>
-</div>
-
 
 </body>
 </html>
